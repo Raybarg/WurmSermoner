@@ -98,25 +98,6 @@ namespace WurmSermoner
                         }
                     }
                     Thread.Sleep(200);
-
-                    if (bWokeUp)
-                    {
-                        Thread.Sleep(2000);
-                        DateTime last;
-                        bWokeUp = false;
-                        //preachers
-                        if (sermon.preachers.Count > 0)
-                        {
-                            Console.WriteLine("I woke up and last sermon was at " + sermon.preachers.LastSermon().ToString("dd-MM-yyyy HH:mm:ss"));
-                            last = sermon.preachers.LastSermon();
-                        }
-                        else
-                        {
-                            last = DateTime.Now;
-                        }
-                        double diff = DateTime.Now.Subtract(last).TotalMinutes;
-                        Console.WriteLine("I woke up and last sermon was at " + last.ToString("dd-MM-yyyy HH:mm:ss") + " this is `" + Convert.ToInt32(diff).ToString() + "` minutes ago");
-                    }
                 }
             }
             catch (Exception ex)
@@ -133,6 +114,18 @@ namespace WurmSermoner
         private void btnStop_Click(object sender, EventArgs e)
         {
             sermoner.DisconnectBot();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (sermoner.client.ConnectionState == Discord.ConnectionState.Connected)
+            {
+                tsBot.Image = global::WurmSermoner.Properties.Resources.check;
+            }
+            else
+            {
+                tsBot.Image = global::WurmSermoner.Properties.Resources.multiply;
+            }
         }
     }
 }

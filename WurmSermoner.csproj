@@ -115,6 +115,7 @@
     <Compile Include="frmWurmSermoner.Designer.cs">
       <DependentUpon>frmWurmSermoner.cs</DependentUpon>
     </Compile>
+    <Compile Include="Log\Parser.cs" />
     <Compile Include="Modules\SermonModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -152,6 +153,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
+    <None Include="Images\multiply.png" />
+    <None Include="Images\check.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

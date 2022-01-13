@@ -19,12 +19,13 @@ namespace WurmSermoner
     public class WurmSermoner
     {
         public ServiceProvider services;
+        public DiscordSocketClient client;
 
         readonly bool bSilentMode = false;
 
         bool bWokeUp = true;
         bool bPreachAvailAnnounced = false;
-        DiscordSocketClient client;
+        
 
         public async Task MainAsync()
         {
@@ -58,7 +59,6 @@ namespace WurmSermoner
                             }
                             double diff = DateTime.Now.Subtract(last).TotalMinutes;
                             await Msg("I woke up and last sermon was at " + last.ToString("dd-MM-yyyy HH:mm:ss") + " this is `" + Convert.ToInt32(diff).ToString() + "` minutes ago");
-
                         }
                     } else
                     {
@@ -79,19 +79,18 @@ namespace WurmSermoner
                                 int preacherDiff = Convert.ToInt32(DateTime.Now.Subtract(p.LastSermon).TotalMinutes);
                                 if (preacherDiff < 1440)
                                 {
-                                    if (Convert.ToInt32(diff) >= 30 && preacherDiff > 180 && !p.CanPreachAnnounced)
-                                    {
-                                        p.CanPreachAnnounced = true;
-                                        await Msg("**" + p.Name + "** can preach now!!");
-                                    }
                                     if (Convert.ToInt32(diff) >= 25 && preacherDiff >= 175 && !p.CanPreachPreAnnounced)
                                     {
                                         p.CanPreachPreAnnounced = true;
                                         await Msg("`[Ring the bells!]` **" + p.Name + "** can preach in 5 minutes!!");
                                     }
+                                    if (Convert.ToInt32(diff) >= 30 && preacherDiff > 180 && !p.CanPreachAnnounced)
+                                    {
+                                        p.CanPreachAnnounced = true;
+                                        await Msg("**" + p.Name + "** can preach now!!");
+                                    }
                                 }
                             }
-
                         }
                     }
                     await Task.Delay(200);
@@ -137,7 +136,9 @@ namespace WurmSermoner
         {
             if (!bSilentMode)
             {
-                await client.GetGuild(ulong.Parse(Properties.Resources.Guild)).GetTextChannel(ulong.Parse(Properties.Resources.Channel)).SendMessageAsync(msg);
+                Console.WriteLine("Discord -> " + msg);
+                if (client.ConnectionState == ConnectionState.Connected)
+                    await client.GetGuild(ulong.Parse(Properties.Resources.Guild)).GetTextChannel(ulong.Parse(Properties.Resources.Channel)).SendMessageAsync(msg);
             }
         }
     }
