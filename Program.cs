@@ -14,9 +14,12 @@ namespace WurmSermoner
         [STAThread]
         static void Main()
         {
+            var sermoner = new WurmSermoner();
+            _ = sermoner.MainAsync();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new Form1(sermoner));
         }
     }
 }
