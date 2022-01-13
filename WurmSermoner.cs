@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Http;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,18 @@ namespace WurmSermoner
 {
     public class WurmSermoner
     {
+        public bool Connected
+        {
+            get
+            {
+                return (client.ConnectionState == Discord.ConnectionState.Connected);
+            }
+        }
+
+        public string Operator;
+        public string OperatorDir;
+        public string LogFile;
+        public bool LogFileConfirmed = false;
         public ServiceProvider services;
         public DiscordSocketClient client;
 
@@ -37,12 +50,86 @@ namespace WurmSermoner
 
             try
             {
+                bool bInitFirstTime = true;
+                FileStream fs = null;
+                StreamReader sr = null;
                 SermonService sermon = (SermonService)services.GetService(typeof(SermonService));
+                DateTime curTime = DateTime.ParseExact("00:00:00", "HH:mm:ss", CultureInfo.InvariantCulture);
 
                 while (true)
                 {
+                    if (LogFileConfirmed)
+                    {
+                        fs = new FileStream(OperatorDir + LogFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                        sr = new StreamReader(fs);
+                        LogFileConfirmed = false;
+                        sermon.preachers.Clear();
+                    }
+                    if (fs != null && sr != null)
+                    {
+                        string line;
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            if (line.StartsWith("Logging started"))
+                            {
+                                string temp = line.Substring(16);
+                                DateTime dt = DateTime.Parse(temp);
+                                Console.WriteLine("Logstart: " + dt.ToString());
+
+                                curTime = new DateTime(dt.Year, dt.Month, dt.Day, curTime.Hour, curTime.Minute, curTime.Second);
+                                bInitFirstTime = true;
+                            }
+
+                            if (line.StartsWith("["))
+                            {
+                                string temp = line.Substring(1, 8);
+                                DateTime td = DateTime.ParseExact(temp, "HH:mm:ss", CultureInfo.InvariantCulture);
+
+                                if (bInitFirstTime)
+                                {
+                                    bInitFirstTime = false;
+                                    curTime = new DateTime(curTime.Year, curTime.Month, curTime.Day, td.Hour, td.Minute, td.Second);
+                                }
+
+                                if (curTime.Hour > td.Hour)
+                                {
+                                    DateTime tempTime = new DateTime(curTime.Year, curTime.Month, curTime.Day + 1, td.Hour, td.Minute, td.Second);
+                                    curTime = tempTime;
+                                    Console.WriteLine("Day changed.");
+                                }
+                                else
+                                {
+                                    DateTime tempTime = new DateTime(curTime.Year, curTime.Month, curTime.Day, td.Hour, td.Minute, td.Second);
+                                    curTime = tempTime;
+                                }
+                            }
+
+                            // Sermon
+                            if (line.Contains("finish") && line.Contains("sermon"))
+                            {
+                                string time = line.Substring(1, 8);
+                                DateTime td = DateTime.ParseExact(time, "HH:mm:ss", CultureInfo.InvariantCulture);
+                                td = new DateTime(curTime.Year, curTime.Month, curTime.Day, td.Hour, td.Minute, td.Second);
+
+                                string[] lineSplit = line.Split(' ');
+                                if (lineSplit[1] == "You")
+                                {
+                                    lineSplit[1] = Operator;
+                                }
+
+                                sermon.preachers.AddPreacher(lineSplit[1], td);
+
+                                Console.WriteLine("At: " + td.ToString("dd-MM-yyyy HH:mm:ss") + " by " + lineSplit[1]);
+                                Console.WriteLine(line);
+
+                                sermon.preachers.ResetAnnouncements(false);
+                            }
+                        }
+                    }
+
                     if (bWokeUp)
                     {
+                        await Task.Delay(2000);
                         if (client.ConnectionState == ConnectionState.Connected)
                         {
                             DateTime last;

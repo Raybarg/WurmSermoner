@@ -17,93 +17,19 @@ namespace WurmSermoner
     public partial class frmWurmSermoner : Form
     {
         private WurmSermoner sermoner;
+        private SermonService sermon;
         public frmWurmSermoner(WurmSermoner wser)
         {
             sermoner = wser;
+            sermon = (SermonService)wser.services.GetService(typeof(SermonService));
             InitializeComponent();
+
+            CheckLogFile();
         }
 
         private void btnStuff_Click(object sender, EventArgs e)
         {
-            bool bWokeUp = true;
-            string Operator = txtOperator.Text;
-            string OperatorDir = txtLogsDir.Text;
-            string LogFile = txtLogFile.Text;
-
-            try
-            {
-                bool bInitFirstTime = true;
-                DateTime curTime = DateTime.ParseExact("00:00:00", "HH:mm:ss", CultureInfo.InvariantCulture);
-                var fs = new FileStream(OperatorDir + LogFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                using (StreamReader sr = new StreamReader(fs))
-                {
-                    string line;
-                    SermonService sermon = (SermonService)sermoner.services.GetService(typeof(SermonService));
-
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                        if (line.StartsWith("Logging started"))
-                        {
-                            string temp = line.Substring(16);
-                            DateTime dt = DateTime.Parse(temp);
-                            Console.WriteLine("Logstart: " + dt.ToString());
-
-                            curTime = new DateTime(dt.Year, dt.Month, dt.Day, curTime.Hour, curTime.Minute, curTime.Second);
-                            bInitFirstTime = true;
-                        }
-
-                        if (line.StartsWith("["))
-                        {
-                            string temp = line.Substring(1, 8);
-                            DateTime td = DateTime.ParseExact(temp, "HH:mm:ss", CultureInfo.InvariantCulture);
-
-                            if (bInitFirstTime)
-                            {
-                                bInitFirstTime = false;
-                                curTime = new DateTime(curTime.Year, curTime.Month, curTime.Day, td.Hour, td.Minute, td.Second);
-                            }
-
-                            if (curTime.Hour > td.Hour)
-                            {
-                                DateTime tempTime = new DateTime(curTime.Year, curTime.Month, curTime.Day + 1, td.Hour, td.Minute, td.Second);
-                                curTime = tempTime;
-                                Console.WriteLine("Day changed.");
-                            }
-                            else
-                            {
-                                DateTime tempTime = new DateTime(curTime.Year, curTime.Month, curTime.Day, td.Hour, td.Minute, td.Second);
-                                curTime = tempTime;
-                            }
-                        }
-
-                        // Sermon
-                        if (line.Contains("finish") && line.Contains("sermon"))
-                        {
-                            string time = line.Substring(1, 8);
-                            DateTime td = DateTime.ParseExact(time, "HH:mm:ss", CultureInfo.InvariantCulture);
-                            td = new DateTime(curTime.Year, curTime.Month, curTime.Day, td.Hour, td.Minute, td.Second);
-
-                            string[] lineSplit = line.Split(' ');
-                            if (lineSplit[1] == "You")
-                            {
-                                lineSplit[1] = Operator;
-                            }
-
-                            sermon.preachers.AddPreacher(lineSplit[1], td);
-
-                            Console.WriteLine("At: " + td.ToString("dd-MM-yyyy HH:mm:ss") + " by " + lineSplit[1]);
-                            Console.WriteLine(line);
-
-                            sermon.preachers.ResetAnnouncements(false);
-                        }
-                    }
-                    Thread.Sleep(200);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            CheckLogFile();
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -118,13 +44,45 @@ namespace WurmSermoner
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (sermoner.client.ConnectionState == Discord.ConnectionState.Connected)
+            if (sermoner.Connected)
             {
                 tsBot.Image = global::WurmSermoner.Properties.Resources.check;
             }
             else
             {
                 tsBot.Image = global::WurmSermoner.Properties.Resources.multiply;
+            }
+
+            if (sermon.preachers.Count > 0)
+            {
+                txtList.Text = sermon.preachers.GetDiscordList();
+            }
+        }
+
+        private void CheckLogFile()
+        {
+            if (txtLogsDir.Text.Length > 0 && txtLogFile.Text.Length > 0)
+            {
+                if (File.Exists(txtLogsDir.Text + txtLogFile.Text))
+                {
+                    sermoner.Operator = txtOperator.Text;
+                    sermoner.OperatorDir = txtLogsDir.Text;
+                    sermoner.LogFile = txtLogFile.Text;
+                    sermoner.LogFileConfirmed = true;
+                    tsLogFile.Image = global::WurmSermoner.Properties.Resources.check;
+                }
+                else
+                {
+                    tsLogFile.Image = global::WurmSermoner.Properties.Resources.multiply;
+                }
+            }
+        }
+
+        private void frmWurmSermoner_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (sermoner.Connected)
+            {
+                sermoner.DisconnectBot();
             }
         }
     }
