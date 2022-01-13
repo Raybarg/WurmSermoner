@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31624.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WurmSermoner", "WurmSermoner.csproj", "{0AB8A759-D902-4350-873A-A36E3312A2A6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0AB8A759-D902-4350-873A-A36E3312A2A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AB8A759-D902-4350-873A-A36E3312A2A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AB8A759-D902-4350-873A-A36E3312A2A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AB8A759-D902-4350-873A-A36E3312A2A6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A5F992A7-0EDD-4600-AE81-95B900218B1B}
+	EndGlobalSection
+EndGlobal
