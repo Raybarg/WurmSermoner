@@ -14,10 +14,10 @@ using WurmSermoner.Services;
 
 namespace WurmSermoner
 {
-    public partial class Form1 : Form
+    public partial class frmWurmSermoner : Form
     {
         private WurmSermoner sermoner;
-        public Form1(WurmSermoner wser)
+        public frmWurmSermoner(WurmSermoner wser)
         {
             sermoner = wser;
             InitializeComponent();
@@ -123,6 +123,16 @@ namespace WurmSermoner
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            sermoner.ConnectBot();
+        }
+
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            sermoner.DisconnectBot();
         }
     }
 }

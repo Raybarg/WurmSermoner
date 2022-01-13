@@ -1,7 +1,7 @@
 ﻿
 namespace WurmSermoner
 {
-    partial class Form1
+    partial class frmWurmSermoner
     {
         /// <summary>
         /// Required designer variable.
@@ -36,6 +36,8 @@ namespace WurmSermoner
             this.txtLogFile = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.btnStuff = new System.Windows.Forms.Button();
+            this.btnStart = new System.Windows.Forms.Button();
+            this.btnStop = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -91,19 +93,41 @@ namespace WurmSermoner
             // 
             // btnStuff
             // 
-            this.btnStuff.Location = new System.Drawing.Point(257, 169);
+            this.btnStuff.Location = new System.Drawing.Point(148, 134);
             this.btnStuff.Name = "btnStuff";
-            this.btnStuff.Size = new System.Drawing.Size(75, 23);
+            this.btnStuff.Size = new System.Drawing.Size(83, 23);
             this.btnStuff.TabIndex = 6;
-            this.btnStuff.Text = "Stuff";
+            this.btnStuff.Text = "Parse log";
             this.btnStuff.UseVisualStyleBackColor = true;
             this.btnStuff.Click += new System.EventHandler(this.btnStuff_Click);
             // 
-            // Form1
+            // btnStart
+            // 
+            this.btnStart.Location = new System.Drawing.Point(426, 137);
+            this.btnStart.Name = "btnStart";
+            this.btnStart.Size = new System.Drawing.Size(75, 23);
+            this.btnStart.TabIndex = 7;
+            this.btnStart.Text = "Start bot";
+            this.btnStart.UseVisualStyleBackColor = true;
+            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
+            // 
+            // btnStop
+            // 
+            this.btnStop.Location = new System.Drawing.Point(426, 166);
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(75, 23);
+            this.btnStop.TabIndex = 8;
+            this.btnStop.Text = "Stop bot";
+            this.btnStop.UseVisualStyleBackColor = true;
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            // 
+            // frmWurmSermoner
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnStop);
+            this.Controls.Add(this.btnStart);
             this.Controls.Add(this.btnStuff);
             this.Controls.Add(this.txtLogFile);
             this.Controls.Add(this.label3);
@@ -113,7 +137,7 @@ namespace WurmSermoner
             this.Controls.Add(this.label1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
-            this.Name = "Form1";
+            this.Name = "frmWurmSermoner";
             this.Text = "WurmSermoner";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -129,6 +153,8 @@ namespace WurmSermoner
         private System.Windows.Forms.TextBox txtLogFile;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btnStuff;
+        private System.Windows.Forms.Button btnStart;
+        private System.Windows.Forms.Button btnStop;
     }
 }
 

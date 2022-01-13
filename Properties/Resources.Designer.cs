@@ -61,11 +61,29 @@ namespace WurmSermoner.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to NzQ4MTkwNDM4MTE2MDMyNzEz.X0Z0pQ.xA1Opk34UeQiJJp4csQC7A3N3Uo.
         /// </summary>
         internal static string BotToken {
             get {
                 return ResourceManager.GetString("BotToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 930125445465251880.
+        /// </summary>
+        internal static string Channel {
+            get {
+                return ResourceManager.GetString("Channel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 930105942761156668.
+        /// </summary>
+        internal static string Guild {
+            get {
+                return ResourceManager.GetString("Guild", resourceCulture);
             }
         }
     }

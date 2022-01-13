@@ -19,7 +19,7 @@ namespace WurmSermoner
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1(sermoner));
+            Application.Run(new frmWurmSermoner(sermoner));
         }
     }
 }
