@@ -1,5 +1,6 @@
 #Sensitive data
 Properties/Resources.resx
+App.config
 
 # Build results
 [Dd]ebug/

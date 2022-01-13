@@ -13,6 +13,9 @@ using Discord.WebSocket;
 using WurmSermoner.Services;
 using WurmSermoner.Sermon;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net;
+using System.Net.Sockets;
+using System.Xml.Serialization;
 
 
 namespace WurmSermoner
@@ -26,10 +29,19 @@ namespace WurmSermoner
                 return (client.ConnectionState == Discord.ConnectionState.Connected);
             }
         }
+        public bool ServerResponded;
+
+        public string BotToken;
+        public ulong GuildID;
+        public ulong ChannelID;
 
         public string Operator;
         public string OperatorDir;
         public string LogFile;
+
+        public string Server;
+        public string Port;
+
         public bool LogFileConfirmed = false;
         public ServiceProvider services;
         public DiscordSocketClient client;
@@ -118,9 +130,18 @@ namespace WurmSermoner
                                 }
 
                                 sermon.preachers.AddPreacher(lineSplit[1], td);
+                                Sermon.Sermon s = new Sermon.Sermon();
+                                s.Preacher = lineSplit[1];
+                                s.Time = td;
+                                await BroadcastSermon(s);
 
                                 Console.WriteLine("At: " + td.ToString("dd-MM-yyyy HH:mm:ss") + " by " + lineSplit[1]);
                                 Console.WriteLine(line);
+
+                                if (!bWokeUp)
+                                    await Msg("**" + lineSplit[1] + "** sermoned at " + td.ToString("dd-MM-yyyy HH:mm:ss"));
+
+                                bPreachAvailAnnounced = false;
 
                                 sermon.preachers.ResetAnnouncements(false);
                             }
@@ -202,7 +223,7 @@ namespace WurmSermoner
 
         public async void ConnectBot()
         {
-            await client.LoginAsync(TokenType.Bot, Properties.Resources.BotToken);
+            await client.LoginAsync(TokenType.Bot, BotToken);
             await client.StartAsync();
             bWokeUp = true;
         }
@@ -225,8 +246,32 @@ namespace WurmSermoner
             {
                 Console.WriteLine("Discord -> " + msg);
                 if (client.ConnectionState == ConnectionState.Connected)
-                    await client.GetGuild(ulong.Parse(Properties.Resources.Guild)).GetTextChannel(ulong.Parse(Properties.Resources.Channel)).SendMessageAsync(msg);
+                    await client.GetGuild(GuildID).GetTextChannel(ChannelID).SendMessageAsync(msg);
             }
+        }
+
+        private Task BroadcastSermon(Sermon.Sermon s)
+        {
+            string textToSend = "";
+            XmlSerializer serializer = new XmlSerializer(typeof(Sermon.Sermon));
+            using (StringWriter writer = new StringWriter())
+            {
+                serializer.Serialize(writer, s);
+                textToSend = writer.ToString();
+            }
+
+            var client = new UdpClient();
+            IPEndPoint ep = new IPEndPoint(IPAddress.Parse(Server), int.Parse(Port));
+            client.Connect(ep);
+
+            byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(textToSend);
+            client.Send(bytesToSend, bytesToSend.Length);
+                        
+            var receivedData = client.Receive(ref ep);
+            Console.WriteLine("received data from " + ep.ToString());
+            Console.WriteLine(ASCIIEncoding.ASCII.GetString(receivedData));
+
+            return Task.CompletedTask;
         }
     }
 }
