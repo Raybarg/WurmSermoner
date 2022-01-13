@@ -14,6 +14,7 @@ namespace WurmSermonerServer
             new Program().MainAsync().GetAwaiter().GetResult();
         }
 
+
         public async Task MainAsync()
         {
             UdpClient server = new UdpClient(11000);
