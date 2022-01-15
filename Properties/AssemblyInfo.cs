@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("WurmSermoner")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Wurm sermoner helper with bot and UDP relay server")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Raybarg")]
 [assembly: AssemblyProduct("WurmSermoner")]
 [assembly: AssemblyCopyright("Copyright ©  2022")]
 [assembly: AssemblyTrademark("")]

@@ -40,6 +40,7 @@ namespace WurmSermoner
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.btnSave = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button3 = new System.Windows.Forms.Button();
             this.txtPort = new System.Windows.Forms.TextBox();
@@ -64,6 +65,10 @@ namespace WurmSermoner
             this.label4 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.txtList = new System.Windows.Forms.TextBox();
+            this.chkRunServer = new System.Windows.Forms.CheckBox();
+            this.tsLocalServer = new System.Windows.Forms.ToolStripStatusLabel();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.btnOpenFile = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -101,7 +106,8 @@ namespace WurmSermoner
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsBot,
             this.tsLogFile,
-            this.tsSermonServer});
+            this.tsSermonServer,
+            this.tsLocalServer});
             this.statusStrip1.Location = new System.Drawing.Point(0, 347);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(753, 25);
@@ -139,8 +145,8 @@ namespace WurmSermoner
             this.tsSermonServer.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenOuter;
             this.tsSermonServer.Image = global::WurmSermoner.Properties.Resources.multiply;
             this.tsSermonServer.Name = "tsSermonServer";
-            this.tsSermonServer.Size = new System.Drawing.Size(103, 20);
-            this.tsSermonServer.Text = "Sermon Server";
+            this.tsSermonServer.Size = new System.Drawing.Size(147, 20);
+            this.tsSermonServer.Text = "Remote Sermon Server";
             // 
             // timer1
             // 
@@ -163,6 +169,7 @@ namespace WurmSermoner
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.btnSave);
             this.tabPage1.Controls.Add(this.groupBox1);
             this.tabPage1.Controls.Add(this.groupBox2);
             this.tabPage1.Controls.Add(this.btnRefreshBotSettings);
@@ -174,10 +181,21 @@ namespace WurmSermoner
             this.tabPage1.Text = "Settings";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // btnSave
+            // 
+            this.btnSave.Location = new System.Drawing.Point(545, 280);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(83, 23);
+            this.btnSave.TabIndex = 17;
+            this.btnSave.Text = "Save settings";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
             // groupBox1
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.chkRunServer);
             this.groupBox1.Controls.Add(this.button3);
             this.groupBox1.Controls.Add(this.txtPort);
             this.groupBox1.Controls.Add(this.label8);
@@ -206,7 +224,6 @@ namespace WurmSermoner
             this.txtPort.Name = "txtPort";
             this.txtPort.Size = new System.Drawing.Size(126, 20);
             this.txtPort.TabIndex = 19;
-            this.txtPort.Text = "11000";
             // 
             // label8
             // 
@@ -223,7 +240,6 @@ namespace WurmSermoner
             this.txtAddress.Name = "txtAddress";
             this.txtAddress.Size = new System.Drawing.Size(126, 20);
             this.txtAddress.TabIndex = 17;
-            this.txtAddress.Text = "127.0.0.1";
             // 
             // label7
             // 
@@ -238,6 +254,7 @@ namespace WurmSermoner
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.btnOpenFile);
             this.groupBox2.Controls.Add(this.btnRefreshLog);
             this.groupBox2.Controls.Add(this.txtLogFile);
             this.groupBox2.Controls.Add(this.label3);
@@ -267,7 +284,6 @@ namespace WurmSermoner
             this.txtLogFile.Name = "txtLogFile";
             this.txtLogFile.Size = new System.Drawing.Size(126, 20);
             this.txtLogFile.TabIndex = 19;
-            this.txtLogFile.Text = "_Event.2022-01.txt";
             // 
             // label3
             // 
@@ -284,7 +300,6 @@ namespace WurmSermoner
             this.txtLogsDir.Name = "txtLogsDir";
             this.txtLogsDir.Size = new System.Drawing.Size(476, 20);
             this.txtLogsDir.TabIndex = 17;
-            this.txtLogsDir.Text = "D:\\Games\\Steam\\steamapps\\common\\Wurm Online\\gamedata\\players\\Tiscattu\\logs\\";
             // 
             // label2
             // 
@@ -301,7 +316,6 @@ namespace WurmSermoner
             this.txtOperator.Name = "txtOperator";
             this.txtOperator.Size = new System.Drawing.Size(126, 20);
             this.txtOperator.TabIndex = 15;
-            this.txtOperator.Text = "Tiscattu";
             // 
             // label1
             // 
@@ -376,6 +390,7 @@ namespace WurmSermoner
             // 
             this.txtBotToken.Location = new System.Drawing.Point(78, 19);
             this.txtBotToken.Name = "txtBotToken";
+            this.txtBotToken.PasswordChar = '*';
             this.txtBotToken.Size = new System.Drawing.Size(476, 20);
             this.txtBotToken.TabIndex = 10;
             // 
@@ -408,6 +423,41 @@ namespace WurmSermoner
             this.txtList.Name = "txtList";
             this.txtList.Size = new System.Drawing.Size(645, 311);
             this.txtList.TabIndex = 11;
+            // 
+            // chkRunServer
+            // 
+            this.chkRunServer.AutoSize = true;
+            this.chkRunServer.Location = new System.Drawing.Point(511, 11);
+            this.chkRunServer.Name = "chkRunServer";
+            this.chkRunServer.Size = new System.Drawing.Size(128, 17);
+            this.chkRunServer.TabIndex = 21;
+            this.chkRunServer.Text = "Run server on startup";
+            this.chkRunServer.UseVisualStyleBackColor = true;
+            // 
+            // tsLocalServer
+            // 
+            this.tsLocalServer.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.tsLocalServer.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenOuter;
+            this.tsLocalServer.Image = global::WurmSermoner.Properties.Resources.multiply;
+            this.tsLocalServer.Name = "tsLocalServer";
+            this.tsLocalServer.Size = new System.Drawing.Size(134, 20);
+            this.tsLocalServer.Text = "Local Sermon Server";
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // btnOpenFile
+            // 
+            this.btnOpenFile.Location = new System.Drawing.Point(210, 71);
+            this.btnOpenFile.Name = "btnOpenFile";
+            this.btnOpenFile.Size = new System.Drawing.Size(75, 20);
+            this.btnOpenFile.TabIndex = 21;
+            this.btnOpenFile.Text = "Open file";
+            this.btnOpenFile.UseVisualStyleBackColor = true;
+            this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
             // 
             // frmWurmSermoner
             // 
@@ -474,6 +524,11 @@ namespace WurmSermoner
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox txtAddress;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.CheckBox chkRunServer;
+        private System.Windows.Forms.ToolStripStatusLabel tsLocalServer;
+        private System.Windows.Forms.Button btnOpenFile;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }
 

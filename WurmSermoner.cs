@@ -12,11 +12,12 @@ using Discord.Commands;
 using Discord.WebSocket;
 using WurmSermoner.Services;
 using WurmSermoner.Sermon;
+using WurmSermoner.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Sockets;
 using System.Xml.Serialization;
-
+using System.Configuration;
 
 namespace WurmSermoner
 {
@@ -195,7 +196,15 @@ namespace WurmSermoner
                                     if (Convert.ToInt32(diff) >= 30 && preacherDiff > 180 && !p.CanPreachAnnounced)
                                     {
                                         p.CanPreachAnnounced = true;
-                                        await Msg("**" + p.Name + "** can preach now!!");
+
+                                        // Lets see if there is registered UserID for priest to mention
+                                        string mention = "";
+                                        var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                                        var settings = configFile.AppSettings.Settings;
+                                        if (settings[p.Name] != null)
+                                            mention = "<@" + settings[p.Name].Value + ">";
+
+                                        await Msg("**" + p.Name + "** can preach now!! " + mention);
                                     }
                                 }
                             }
@@ -252,24 +261,62 @@ namespace WurmSermoner
 
         private Task BroadcastSermon(Sermon.Sermon s)
         {
-            string textToSend = "";
-            XmlSerializer serializer = new XmlSerializer(typeof(Sermon.Sermon));
-            using (StringWriter writer = new StringWriter())
+            try
             {
-                serializer.Serialize(writer, s);
-                textToSend = writer.ToString();
+                string textToSend = "";
+                XmlSerializer serializer = new XmlSerializer(typeof(Sermon.Sermon));
+                using (StringWriter writer = new StringWriter())
+                {
+                    serializer.Serialize(writer, s);
+                    textToSend = writer.ToString();
+                }
+
+                var client = new UdpClient();
+                IPEndPoint ep = new IPEndPoint(IPAddress.Parse(Server), int.Parse(Port));
+                client.Connect(ep);
+
+                byte[] bytesToSend = Encoding.UTF8.GetBytes(EncryptionHelper.Encrypt(textToSend));
+                client.Send(bytesToSend, bytesToSend.Length);
+
+
+                // Lets see if we get response from server
+                var wait = TimeSpan.FromSeconds(4);
+                var result = client.BeginReceive(null, null);
+                result.AsyncWaitHandle.WaitOne(wait);
+                if (result.IsCompleted)
+                {
+                    try
+                    {
+                        IPEndPoint remote = null;
+                        byte[] received = client.EndReceive(result, ref remote);
+                        // could check if ep and remote are same?
+                        ServerResponded = true;
+                        Console.WriteLine("UDP received data from " + ep.ToString());
+                        Console.WriteLine(EncryptionHelper.Decrypt(Encoding.UTF8.GetString(received)));
+                    }
+                    catch
+                    {
+                        // receive failed
+                        ServerResponded = false;
+                        Console.WriteLine("UDP Receive failed.");
+                    }
+                }
+                else
+                {
+                    // timeout
+                    ServerResponded = false;
+                    Console.WriteLine("UDP Receive timeout.");
+                }
+
+                client.Close();
+                //var receivedData = client.Receive(ref ep);
+
             }
-
-            var client = new UdpClient();
-            IPEndPoint ep = new IPEndPoint(IPAddress.Parse(Server), int.Parse(Port));
-            client.Connect(ep);
-
-            byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(textToSend);
-            client.Send(bytesToSend, bytesToSend.Length);
-                        
-            var receivedData = client.Receive(ref ep);
-            Console.WriteLine("received data from " + ep.ToString());
-            Console.WriteLine(ASCIIEncoding.ASCII.GetString(receivedData));
+            catch
+            {
+                ServerResponded = false;
+                Console.WriteLine("UDP Connection failure.");
+            }
 
             return Task.CompletedTask;
         }
