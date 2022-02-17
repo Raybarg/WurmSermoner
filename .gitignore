@@ -16,6 +16,7 @@ bld/
 [Dd]ebug*/
 [Rr]elease*/
 *.o
+publish/
 
 # Misc vs crap 
 *.v12.suo

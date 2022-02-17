@@ -11,6 +11,7 @@ namespace WurmSermoner.Services
     {
         private int foo;
         public PreacherList preachers = new PreacherList();
+        public UserList users = new UserList();
 
         public SermonService()
             => foo = 0;

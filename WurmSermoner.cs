@@ -140,7 +140,7 @@ namespace WurmSermoner
                                 Console.WriteLine(line);
 
                                 if (!bWokeUp)
-                                    await Msg("**" + lineSplit[1] + "** sermoned at " + td.ToString("dd-MM-yyyy HH:mm:ss"));
+                                    await Msg("👏👏 **" + lineSplit[1] + "** sermoned at " + td.ToString("dd-MM-yyyy HH:mm:ss") + " 👏👏");
 
                                 bPreachAvailAnnounced = false;
 
@@ -179,7 +179,7 @@ namespace WurmSermoner
                             if (Convert.ToInt32(diff) >= 30 && !bPreachAvailAnnounced)
                             {
                                 bPreachAvailAnnounced = true;
-                                await Msg("Can sermon now!!");
+                                await Msg("```Can sermon now!!```");
                             }
 
                             // Announce preachers if they can preach again
@@ -199,10 +199,9 @@ namespace WurmSermoner
 
                                         // Lets see if there is registered UserID for priest to mention
                                         string mention = "";
-                                        var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                                        var settings = configFile.AppSettings.Settings;
-                                        if (settings[p.Name] != null)
-                                            mention = "<@" + settings[p.Name].Value + ">";
+                                        long id = AppSettingHelper.PreacherDiscordID(p.Name);
+                                        if (id > 0)
+                                            mention = "<@" + id.ToString() + ">";
 
                                         await Msg("**" + p.Name + "** can preach now!! " + mention);
                                     }

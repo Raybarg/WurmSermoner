@@ -78,7 +78,7 @@ namespace WurmSermoner
 
             if (sermon.preachers.Count > 0)
             {
-                txtList.Text = sermon.preachers.GetDiscordList();
+                txtList.Text = sermon.preachers.GetDiscordList(sermon.users);
             }
 
             if (sermoner.ServerResponded)
@@ -121,8 +121,10 @@ namespace WurmSermoner
             }
 
             sermoner.BotToken = txtBotToken.Text;
-            sermoner.GuildID = ulong.Parse(txtGuildID.Text);
-            sermoner.ChannelID = ulong.Parse(txtChannelID.Text);
+            if (!string.IsNullOrEmpty(txtGuildID.Text))
+                sermoner.GuildID = ulong.Parse(txtGuildID.Text);
+            if (!string.IsNullOrEmpty(txtChannelID.Text))
+                sermoner.ChannelID = ulong.Parse(txtChannelID.Text);
 
             if (ReconnectBot)
                 sermoner.ConnectBot();
@@ -192,6 +194,11 @@ namespace WurmSermoner
                 txtLogFile.Text = file.Name;
             }
 
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            sermon.users.ToggleAfk(textBox1.Text);
         }
     }
 }
