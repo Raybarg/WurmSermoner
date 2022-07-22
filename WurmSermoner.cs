@@ -140,7 +140,13 @@ namespace WurmSermoner
                                 Console.WriteLine(line);
 
                                 if (!bWokeUp)
+                                {
                                     await Msg("👏👏 **" + lineSplit[1] + "** sermoned at " + td.ToString("dd-MM-yyyy HH:mm:ss") + " 👏👏");
+                                    sermon.preachers.priestQueue.RemoveIfFirst(lineSplit[1]);
+                                    ConfigHelper.addUpdate("priestQueue", sermon.preachers.priestQueue.ListAll());
+                                    await Msg(sermon.preachers.priestQueue.ListQueue());
+                                }
+
 
                                 bPreachAvailAnnounced = false;
 
@@ -176,34 +182,37 @@ namespace WurmSermoner
                             DateTime last = sermon.preachers.LastSermon();
                             double diff = DateTime.Now.Subtract(last).TotalMinutes;
 
-                            if (Convert.ToInt32(diff) >= 30 && !bPreachAvailAnnounced)
+                            if (Convert.ToInt32(diff) >= 30 && !bPreachAvailAnnounced )
                             {
                                 bPreachAvailAnnounced = true;
                                 await Msg("```Can sermon now!!```");
                             }
 
-                            // Announce preachers if they can preach again
-                            foreach (Preacher p in sermon.preachers)
+                            if(!sermon.preachers.QueueMode)
                             {
-                                int preacherDiff = Convert.ToInt32(DateTime.Now.Subtract(p.LastSermon).TotalMinutes);
-                                if (preacherDiff < 1440)
+                                // Announce preachers if they can preach again
+                                foreach (Preacher p in sermon.preachers)
                                 {
-                                    if (Convert.ToInt32(diff) >= 25 && preacherDiff >= 175 && !p.CanPreachPreAnnounced)
+                                    int preacherDiff = Convert.ToInt32(DateTime.Now.Subtract(p.LastSermon).TotalMinutes);
+                                    if (preacherDiff < 1440)
                                     {
-                                        p.CanPreachPreAnnounced = true;
-                                        await Msg("`[Ring the bells!]` **" + p.Name + "** can preach in 5 minutes!!");
-                                    }
-                                    if (Convert.ToInt32(diff) >= 30 && preacherDiff > 180 && !p.CanPreachAnnounced)
-                                    {
-                                        p.CanPreachAnnounced = true;
+                                        if (Convert.ToInt32(diff) >= 25 && preacherDiff >= 175 && !p.CanPreachPreAnnounced)
+                                        {
+                                            p.CanPreachPreAnnounced = true;
+                                            await Msg("`[Ring the bells!]` **" + p.Name + "** can preach in 5 minutes!!");
+                                        }
+                                        if (Convert.ToInt32(diff) >= 30 && preacherDiff > 180 && !p.CanPreachAnnounced)
+                                        {
+                                            p.CanPreachAnnounced = true;
 
-                                        // Lets see if there is registered UserID for priest to mention
-                                        string mention = "";
-                                        long id = AppSettingHelper.PreacherDiscordID(p.Name);
-                                        if (id > 0)
-                                            mention = "<@" + id.ToString() + ">";
+                                            // Lets see if there is registered UserID for priest to mention
+                                            string mention = "";
+                                            long id = AppSettingHelper.PreacherDiscordID(p.Name);
+                                            if (id > 0)
+                                                mention = "<@" + id.ToString() + ">";
 
-                                        await Msg("**" + p.Name + "** can preach now!! " + mention);
+                                            await Msg("**" + p.Name + "** can preach now!! " + mention);
+                                        }
                                     }
                                 }
                             }

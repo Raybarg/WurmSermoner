@@ -8,6 +8,9 @@ namespace WurmSermoner.Sermon
 {
     public class PreacherList : List<Preacher>
     {
+        public PriestQueue priestQueue = new PriestQueue(ConfigHelper.addGet("priestQueue", ""));
+        public bool QueueMode = bool.Parse(ConfigHelper.addGet("queuemode", "False"));
+
         public bool IsOnCooldown
         {
             get
@@ -26,6 +29,27 @@ namespace WurmSermoner.Sermon
                     }
                 }
                 return false;
+            }
+        }
+
+        public int CoolDownLeft
+        {
+            get
+            {
+                if (this.Count > 0)
+                {
+                    DateTime last = LastSermon();
+                    int diff = Convert.ToInt32(DateTime.Now.Subtract(last).TotalMinutes);
+                    if (diff < 30)
+                    {
+                        return 30 - diff;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+                return 0;
             }
         }
 
@@ -91,7 +115,7 @@ namespace WurmSermoner.Sermon
                 }
             }
             if (this.IsOnCooldown)
-                sb.AppendLine("Sermoning appears to be on cooldown.");
+                sb.AppendLine("Sermoning appears to be on cooldown for " + this.CoolDownLeft.ToString() + " more minutes.");
             return sb.ToString();
         }
 
