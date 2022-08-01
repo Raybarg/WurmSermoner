@@ -10,5 +10,16 @@ namespace WurmSermoner.Sermon
     {
         public string DiscordID;
         public bool Active;
+        public List<string> Priests;
+
+        public User()
+        {
+            Priests = new List<string>();
+        }
+
+        public void AddPriest(string priest)
+        {
+            Priests.Add(priest);
+        }
     }
 }

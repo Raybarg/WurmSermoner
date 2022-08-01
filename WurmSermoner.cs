@@ -51,7 +51,10 @@ namespace WurmSermoner
 
         bool bWokeUp = true;
         bool bPreachAvailAnnounced = false;
-        
+        bool bPreach5minAvailAnnounced = false;
+
+        public WurmIRCSermoner irc;
+
 
         public async Task MainAsync()
         {
@@ -142,13 +145,24 @@ namespace WurmSermoner
                                 if (!bWokeUp)
                                 {
                                     await Msg("👏👏 **" + lineSplit[1] + "** sermoned at " + td.ToString("dd-MM-yyyy HH:mm:ss") + " 👏👏");
-                                    sermon.preachers.priestQueue.RemoveIfFirst(lineSplit[1]);
-                                    ConfigHelper.addUpdate("priestQueue", sermon.preachers.priestQueue.ListAll());
-                                    await Msg(sermon.preachers.priestQueue.ListQueue());
+
+
+                                    if (sermon.preachers.QueueMode)
+                                    {
+                                        sermon.preachers.priestQueue.RemoveIfFirst(lineSplit[1]);
+                                        sermon.preachers.priestQueue.Add(lineSplit[1]);
+                                        await Msg(sermon.preachers.priestQueue.ListQueue());
+                                    } else
+                                    {
+                                        await Msg(sermon.preachers.GetDiscordList(sermon.users));
+                                    }
+
+                                    //ConfigHelper.addUpdate("priestQueue", sermon.preachers.priestQueue.ListAll());
                                 }
 
 
                                 bPreachAvailAnnounced = false;
+                                bPreach5minAvailAnnounced = false;
 
                                 sermon.preachers.ResetAnnouncements(false);
                             }
@@ -182,10 +196,16 @@ namespace WurmSermoner
                             DateTime last = sermon.preachers.LastSermon();
                             double diff = DateTime.Now.Subtract(last).TotalMinutes;
 
-                            if (Convert.ToInt32(diff) >= 30 && !bPreachAvailAnnounced )
+                            if (Convert.ToInt32(diff) >= 30 && !bPreachAvailAnnounced)
                             {
                                 bPreachAvailAnnounced = true;
-                                await Msg("```Can sermon now!!```");
+                                string mention = "";
+                                string first = sermon.preachers.priestQueue.FirstInQueue();
+                                long id = AppSettingHelper.PreacherDiscordID(first);
+                                if (id > 0)
+                                    mention = "<@" + id.ToString() + ">";
+
+                                await Msg("`Can sermon now!!` **" + first + "** " + mention);
                             }
 
                             if(!sermon.preachers.QueueMode)
@@ -215,7 +235,20 @@ namespace WurmSermoner
                                         }
                                     }
                                 }
+                            } else
+                            {
+                                if (Convert.ToInt32(diff) >= 25 && !bPreach5minAvailAnnounced)
+                                {
+                                    bPreach5minAvailAnnounced = true;
+                                    string mention = "";
+                                    string first = sermon.preachers.priestQueue.FirstInQueue();
+                                    long id = AppSettingHelper.PreacherDiscordID(first);
+                                    if (id > 0)
+                                        mention = "<@" + id.ToString() + ">";
+                                    await Msg("`[Ring the bells!]` **Sermon in 5 minutes!** First in queue: **" + first + "** " + mention);
+                                }
                             }
+                             
                         }
                     }
                     await Task.Delay(200);

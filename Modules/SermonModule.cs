@@ -70,6 +70,7 @@ namespace WurmSermoner.Modules
             sb.AppendLine("`!qadd Priestname` - Adds Priestname to end of Queue.");
             sb.AppendLine("`!qremove Priestname` - Removes Priestname from Queue.");
             sb.AppendLine("`!qpush Priestname` - Pushes Priestname to end of queue.");
+            sb.AppendLine("`!qswap Priestname Priestname` - Swaps priestnames in queue.");
             sb.AppendLine("**Source Code:**");
             sb.AppendLine("<https://github.com/Raybarg/WurmSermoner>");
 
@@ -106,6 +107,20 @@ namespace WurmSermoner.Modules
             await ReplyAsync(ss.preachers.priestQueue.ListQueue() + SermonCooldownString());
         }
 
+        [Command("qrewrite")]
+        public async Task QRewrite(string rewrite)
+        {
+            ss.preachers.priestQueue.Rewrite(rewrite);
+            await ReplyAsync(ss.preachers.priestQueue.ListQueue() + SermonCooldownString());
+        }
+
+        [Command("qswap")]
+        public async Task QSwap(string priestFrom, string priestTo)
+        {
+            ss.preachers.priestQueue.Swap(priestFrom, priestTo);
+            await ReplyAsync(ss.preachers.priestQueue.ListQueue() + SermonCooldownString());
+        }
+
         private string SermonCooldownString()
         {
             string cd = "";
@@ -118,9 +133,44 @@ namespace WurmSermoner.Modules
         public async Task QueueMode()
         {
             ss.preachers.QueueMode = !ss.preachers.QueueMode;
-            ConfigHelper.addUpdate("priestQueueMode", ss.preachers.QueueMode.ToString());
+            ConfigHelper.addUpdate("queueMode", ss.preachers.QueueMode.ToString());
             await ReplyAsync("Queue mode: " + ss.preachers.QueueMode.ToString());
         }
 
+        [Command("qtest")]
+        public async Task QTest()
+        {
+            var priests = ss.preachers.priestQueue.ListAllEmbed();
+            var times = ss.preachers.priestQueue.ListAllTimesEmbed();
+            var embed = new EmbedBuilder { Title = "Test Queue Embed thingy" };
+            embed.AddField("Priests in queue",
+                priests,
+                true);
+            embed.AddField("Preach time",
+                times,
+                true);
+            await ReplyAsync(embed: embed.Build());
+        }
+
+        [Command("whois")]
+        public async Task Whois(string priest)
+        {
+            string response = "Unknown priest.";
+            var discordID = ss.users.DiscordIDByPriest(priest);
+            Discord.WebSocket.SocketUser user;
+            if (discordID > 0)
+            {
+                user = Context.Client.GetUser((ulong)discordID);
+                if(user != null)
+                    response = "Priest " + priest + " is " + user.Username + ">";
+            }
+            await ReplyAsync(response);
+        }
+
+        [Command("willyoubeback")]
+        public async Task Willyoubeback()
+        {
+            await ReplyAsync("I'll be back!");
+        }
     }
 }

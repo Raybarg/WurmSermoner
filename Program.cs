@@ -19,12 +19,8 @@ namespace WurmSermoner
             if (Helpers.AppSettingHelper.RunServer())
                 _ = sermonerServer.MainAsync();
 
-
             var sermoner = new WurmSermoner();
             _ = sermoner.MainAsync();
-
-            
-
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

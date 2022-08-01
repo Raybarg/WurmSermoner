@@ -9,7 +9,7 @@ namespace WurmSermoner.Sermon
     public class PreacherList : List<Preacher>
     {
         public PriestQueue priestQueue = new PriestQueue(ConfigHelper.addGet("priestQueue", ""));
-        public bool QueueMode = bool.Parse(ConfigHelper.addGet("queuemode", "False"));
+        public bool QueueMode = bool.Parse(ConfigHelper.addGet("queueMode", "False"));
 
         public bool IsOnCooldown
         {
@@ -90,6 +90,8 @@ namespace WurmSermoner.Sermon
 
             List<Preacher> pl = this.OrderBy(o => o.LastSermon).ToList();
 
+            sb.AppendLine("```diff");
+
             foreach (Preacher p in pl)
             {
                 DateTime last = p.LastSermon;
@@ -97,12 +99,12 @@ namespace WurmSermoner.Sermon
 
                 if (diff < 1440)
                 {
-                    string extra = "";
+                    string extra = "+ ";
                     string extra2 = "";
                     string afk = "";
                     if (diff < 180)
                     {
-                        extra = "~~";
+                        extra = "- ";
                         extra2 = " [" + (180 - diff).ToString() + " minutes]";
                     }
 
@@ -111,11 +113,12 @@ namespace WurmSermoner.Sermon
                         if (users.IsAfk(id.ToString()))
                             afk = "  - **AFK**";
 
-                    sb.AppendLine(extra + "**" + p.Name + "** (" + p.LastSermon.ToString("dd-MM-yyyy HH:mm:ss") + ") -> " + diff.ToString() + " minutes ago." + extra + extra2 + " [# " + p.PreachCount.ToString() + "]" + afk);
+                    sb.AppendLine(extra + "" + p.Name + " (" + p.LastSermon.ToString("dd-MM-yyyy HH:mm:ss") + ") -> " + diff.ToString() + " minutes ago." + extra2 + " [# " + p.PreachCount.ToString() + "]" + afk);
                 }
             }
             if (this.IsOnCooldown)
                 sb.AppendLine("Sermoning appears to be on cooldown for " + this.CoolDownLeft.ToString() + " more minutes.");
+            sb.Append("```");
             return sb.ToString();
         }
 
