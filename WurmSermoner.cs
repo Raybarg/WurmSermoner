@@ -19,11 +19,14 @@ using System.Net;
 using System.Net.Sockets;
 using System.Xml.Serialization;
 using System.Configuration;
+using WurmSermoner.Log;
 
 namespace WurmSermoner
 {
     public class WurmSermoner
     {
+        SermonService sermonService;
+
         public bool Connected
         {
             get
@@ -40,17 +43,17 @@ namespace WurmSermoner
         public string Operator;
         public string OperatorDir;
         public string LogFile;
+        public Parser parser;
 
         public string Server;
         public string Port;
 
-        public bool LogFileConfirmed = false;
         public ServiceProvider services;
         public DiscordSocketClient client;
 
+        private bool bWokeUp = true;
         readonly bool bSilentMode = false;
 
-        bool bWokeUp = true;
         bool bPreachAvailAnnounced = false;
         bool bPreach5minAvailAnnounced = false;
 
@@ -67,115 +70,11 @@ namespace WurmSermoner
 
             try
             {
-                bool bInitFirstTime = true;
-                FileStream fs = null;
-                StreamReader sr = null;
-                SermonService sermon = (SermonService)services.GetService(typeof(SermonService));
-                DateTime curTime = DateTime.ParseExact("00:00:00", "HH:mm:ss", CultureInfo.InvariantCulture);
-
-                irc.ss = sermon;
+                sermonService = (SermonService)services.GetService(typeof(SermonService));
+                irc.ss = sermonService;
 
                 while (true)
                 {
-                    if (LogFileConfirmed)
-                    {
-                        fs = new FileStream(OperatorDir + LogFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                        sr = new StreamReader(fs);
-                        LogFileConfirmed = false;
-                        sermon.preachers.Clear();
-                    }
-                    if (fs != null && sr != null)
-                    {
-                        string line;
-                        while ((line = sr.ReadLine()) != null)
-                        {
-                            if (line.StartsWith("Logging started"))
-                            {
-                                string temp = line.Substring(16);
-                                DateTime dt = DateTime.Parse(temp);
-                                Console.WriteLine("Logstart: " + dt.ToString());
-
-                                curTime = new DateTime(dt.Year, dt.Month, dt.Day, curTime.Hour, curTime.Minute, curTime.Second);
-                                bInitFirstTime = true;
-                            }
-
-                            if (line.StartsWith("["))
-                            {
-                                string temp = line.Substring(1, 8);
-                                DateTime td = DateTime.ParseExact(temp, "HH:mm:ss", CultureInfo.InvariantCulture);
-
-                                if (bInitFirstTime)
-                                {
-                                    bInitFirstTime = false;
-                                    curTime = new DateTime(curTime.Year, curTime.Month, curTime.Day, td.Hour, td.Minute, td.Second);
-                                }
-
-                                if (curTime.Hour > td.Hour)
-                                {
-                                    DateTime tempTime = new DateTime(curTime.Year, curTime.Month, curTime.Day + 1, td.Hour, td.Minute, td.Second);
-                                    curTime = tempTime;
-                                    Console.WriteLine("Day changed.");
-                                }
-                                else
-                                {
-                                    DateTime tempTime = new DateTime(curTime.Year, curTime.Month, curTime.Day, td.Hour, td.Minute, td.Second);
-                                    curTime = tempTime;
-                                }
-                            }
-
-                            // Sermon
-                            if (line.Contains("finish") && line.Contains("sermon"))
-                            {
-                                string time = line.Substring(1, 8);
-                                DateTime td = DateTime.ParseExact(time, "HH:mm:ss", CultureInfo.InvariantCulture);
-                                td = new DateTime(curTime.Year, curTime.Month, curTime.Day, td.Hour, td.Minute, td.Second);
-
-                                string[] lineSplit = line.Split(' ');
-                                if (lineSplit[1] == "You")
-                                {
-                                    lineSplit[1] = Operator;
-                                }
-
-                                sermon.preachers.AddPreacher(lineSplit[1], td);
-                                Sermon.Sermon s = new Sermon.Sermon();
-                                s.Preacher = lineSplit[1];
-                                s.Time = td;
-                                await BroadcastSermon(s);
-
-                                Console.WriteLine("At: " + td.ToString("dd-MM-yyyy HH:mm:ss") + " by " + lineSplit[1]);
-                                Console.WriteLine(line);
-
-                                if (!bWokeUp)
-                                {
-                                    await Msg("👏👏 **" + lineSplit[1] + "** sermoned at " + td.ToString("dd-MM-yyyy HH:mm:ss") + " 👏👏", sermon, false);
-
-                                    sermon.RemoveSermonMessages();
-                                    sermon.RemoveLastSermonList();
-
-                                    if (sermon.preachers.QueueMode)
-                                    {
-                                        sermon.preachers.priestQueue.RemoveIfFirst(lineSplit[1]);
-                                        sermon.preachers.priestQueue.Add(lineSplit[1]);
-                                        await Msg(sermon.preachers.priestQueue.ListQueue(), sermon);
-                                    } else
-                                    {
-                                        await Msg(sermon.preachers.GetDiscordList(sermon.users), sermon, false);
-                                        sermon.ListMessageUpdate();
-                                    }
-                                    
-
-                                    //ConfigHelper.addUpdate("priestQueue", sermon.preachers.priestQueue.ListAll());
-                                }
-
-
-                                bPreachAvailAnnounced = false;
-                                bPreach5minAvailAnnounced = false;
-
-                                sermon.preachers.ResetAnnouncements(false);
-                            }
-                        }
-                    }
-
                     if (bWokeUp)
                     {
                         await Task.Delay(2000);
@@ -184,41 +83,41 @@ namespace WurmSermoner
                             DateTime last;
                             bWokeUp = false;
                             //preachers
-                            if (sermon.preachers.Count > 0)
+                            if (sermonService.preachers.Count > 0)
                             {
-                                Console.WriteLine("I woke up and last sermon was at " + sermon.preachers.LastSermon().ToString("dd-MM-yyyy HH:mm:ss"));
-                                last = sermon.preachers.LastSermon();
+                                Console.WriteLine("I woke up and last sermon was at " + sermonService.preachers.LastSermon().ToString("dd-MM-yyyy HH:mm:ss"));
+                                last = sermonService.preachers.LastSermon();
                             }
                             else
                             {
                                 last = DateTime.Now;
                             }
                             double diff = DateTime.Now.Subtract(last).TotalMinutes;
-                            await Msg("I woke up and last sermon was at " + last.ToString("dd-MM-yyyy HH:mm:ss") + " this is `" + Convert.ToInt32(diff).ToString() + "` minutes ago", sermon, false);
+                            await Msg("I woke up and last sermon was at " + last.ToString("dd-MM-yyyy HH:mm:ss") + " this is `" + Convert.ToInt32(diff).ToString() + "` minutes ago", false);
                         }
                     } else
                     {
                         if (client.ConnectionState == ConnectionState.Connected)
                         {
-                            DateTime last = sermon.preachers.LastSermon();
+                            DateTime last = sermonService.preachers.LastSermon();
                             double diff = DateTime.Now.Subtract(last).TotalMinutes;
 
                             if (Convert.ToInt32(diff) >= 30 && !bPreachAvailAnnounced)
                             {
                                 bPreachAvailAnnounced = true;
                                 string mention = "";
-                                string first = sermon.preachers.priestQueue.FirstInQueue();
+                                string first = sermonService.preachers.priestQueue.FirstInQueue();
                                 long id = AppSettingHelper.PreacherDiscordID(first);
                                 if (id > 0)
                                     mention = "<@" + id.ToString() + ">";
 
-                                await Msg("`Can sermon now!!` **" + first + "** " + mention, sermon);
+                                await Msg("`Can sermon now!!` **" + first + "** " + mention);
                             }
 
-                            if(!sermon.preachers.QueueMode)
+                            if(!sermonService.preachers.QueueMode)
                             {
                                 // Announce preachers if they can preach again
-                                foreach (Preacher p in sermon.preachers)
+                                foreach (Preacher p in sermonService.preachers)
                                 {
                                     int preacherDiff = Convert.ToInt32(DateTime.Now.Subtract(p.LastSermon).TotalMinutes);
                                     if (preacherDiff < 1440)
@@ -226,7 +125,7 @@ namespace WurmSermoner
                                         if (Convert.ToInt32(diff) >= 25 && preacherDiff >= 175 && !p.CanPreachPreAnnounced)
                                         {
                                             p.CanPreachPreAnnounced = true;
-                                            await Msg("`[Ring the bells!]` **" + p.Name + "** can preach in 5 minutes!!", sermon);
+                                            await Msg("`[Ring the bells!]` **" + p.Name + "** can preach in 5 minutes!!");
                                         }
                                         if (Convert.ToInt32(diff) >= 30 && preacherDiff > 180 && !p.CanPreachAnnounced)
                                         {
@@ -238,7 +137,7 @@ namespace WurmSermoner
                                             if (id > 0)
                                                 mention = "<@" + id.ToString() + ">";
 
-                                            await Msg("**" + p.Name + "** can preach now!! " + mention, sermon);
+                                            await Msg("**" + p.Name + "** can preach now!! " + mention);
                                         }
                                     }
                                 }
@@ -248,17 +147,17 @@ namespace WurmSermoner
                                 {
                                     bPreach5minAvailAnnounced = true;
                                     string mention = "";
-                                    string first = sermon.preachers.priestQueue.FirstInQueue();
+                                    string first = sermonService.preachers.priestQueue.FirstInQueue();
                                     long id = AppSettingHelper.PreacherDiscordID(first);
                                     if (id > 0)
                                         mention = "<@" + id.ToString() + ">";
-                                    await Msg("`[Ring the bells!]` **Sermon in 5 minutes!** First in queue: **" + first + "** " + mention, sermon);
+                                    await Msg("`[Ring the bells!]` **Sermon in 5 minutes!** First in queue: **" + first + "** " + mention);
                                 }
                             }
                              
                         }
                     }
-                    sermon.ListMessageUpdateTick();
+                    sermonService.ListMessageUpdateTick();
                     await Task.Delay(200);
                 }
             }
@@ -267,6 +166,57 @@ namespace WurmSermoner
                 Console.WriteLine(e.Message);
             }
         }
+
+        private void Parser_SermonEventOccurred(object sender, SermonEventArgs e)
+        {
+            Console.WriteLine("At: " + e.Sermon.Time.ToString("dd-MM-yyyy HH:mm:ss") + " by " + e.Sermon.Preacher);
+            Console.WriteLine(e.RawLine);
+            
+            _ = Msg("👏👏 **" + e.Sermon.Preacher + "** sermoned at " + e.Sermon.Time.ToString("dd-MM-yyyy HH:mm:ss") + " 👏👏", false);
+            
+            sermonService.preachers.AddPreacher(e.Sermon.Preacher, e.Sermon.Time);
+            
+            if (!bWokeUp)
+            {
+                sermonService.RemoveSermonMessages();
+                sermonService.RemoveLastSermonList();
+                if (sermonService.preachers.QueueMode)
+                {
+                    sermonService.preachers.priestQueue.RemoveIfFirst(e.Sermon.Preacher);
+                    sermonService.preachers.priestQueue.Add(e.Sermon.Preacher);
+                    _ = Msg(sermonService.preachers.priestQueue.ListQueue());
+                }
+                else
+                {
+                    _ = Msg(sermonService.preachers.GetDiscordList(sermonService.users), false);
+                    sermonService.ListMessageUpdate();
+                }
+            }
+            bPreachAvailAnnounced = false;
+            bPreach5minAvailAnnounced = false;
+            sermonService.preachers.ResetAnnouncements(false);
+        }
+
+        public void LogFileChanged()
+        {
+            if (parser == null)
+            {
+                parser = new Parser(sermonService);
+            }
+            else
+            {
+                if (parser.IsRunning)
+                {
+                    parser.Stop();
+                }
+            }
+            parser.Init(OperatorDir + LogFile, Operator);
+            parser.SermonEventOccurred += Parser_SermonEventOccurred;
+            parser.Start();
+
+            sermonService.preachers.Clear();
+        }
+
 
         private ServiceProvider ConfigureServices()
         {
@@ -298,7 +248,7 @@ namespace WurmSermoner
             return Task.CompletedTask;
         }
 
-        private async Task Msg(string msg, SermonService sermon, bool bAddToRemoveList = true)
+        private async Task Msg(string msg, bool bAddToRemoveList = true)
         {
             if (!bSilentMode)
             {
@@ -309,10 +259,10 @@ namespace WurmSermoner
                     {
                         var channel = client.GetChannel(ChannelID) as IMessageChannel;
                         var discordmsg = await channel.SendMessageAsync(msg);
-                        if (sermon != null)
+                        if (sermonService != null)
                         {
-                            sermon.lastMessage = discordmsg;
-                            if (bAddToRemoveList) sermon.sermonMessages.Add(discordmsg);
+                            sermonService.lastMessage = discordmsg;
+                            if (bAddToRemoveList) sermonService.sermonMessages.Add(discordmsg);
                         }
                     }
                     catch (Exception e)

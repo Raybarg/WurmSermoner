@@ -318,11 +318,13 @@
     <Compile Include="Helpers\EncryptionHelper.cs" />
     <Compile Include="Helpers\TextHelper.cs" />
     <Compile Include="Log\Parser.cs" />
+    <Compile Include="Log\SermonEventArgs.cs" />
     <Compile Include="Modules\SermonModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sermon\Preacher.cs" />
     <Compile Include="Sermon\PreacherList.cs" />
+    <Compile Include="Sermon\PreachQueue.cs" />
     <Compile Include="Sermon\PriestQueue.cs" />
     <Compile Include="Sermon\Sermon.cs" />
     <Compile Include="Sermon\User.cs" />

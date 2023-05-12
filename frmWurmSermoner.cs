@@ -101,7 +101,8 @@ namespace WurmSermoner
                     sermoner.Operator = txtOperator.Text;
                     sermoner.OperatorDir = txtLogsDir.Text;
                     sermoner.LogFile = txtLogFile.Text;
-                    sermoner.LogFileConfirmed = true;
+                    sermoner.LogFileChanged();
+
                     tsLogFile.Image = global::WurmSermoner.Properties.Resources.check;
                 }
                 else
@@ -143,16 +144,6 @@ namespace WurmSermoner
             {
                 sermoner.DisconnectBot();
             }
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            CheckBotSettings();
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            CheckServerSettings();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -210,5 +201,6 @@ namespace WurmSermoner
         {
             sermoner.irc.Disconnect();
         }
+
     }
 }
