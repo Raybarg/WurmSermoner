@@ -46,14 +46,12 @@ namespace WurmSermoner
             this.btnSave = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.chkRunServer = new System.Windows.Forms.CheckBox();
-            this.button3 = new System.Windows.Forms.Button();
             this.txtPort = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.txtAddress = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnOpenFile = new System.Windows.Forms.Button();
-            this.btnRefreshLog = new System.Windows.Forms.Button();
             this.txtLogFile = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.txtLogsDir = new System.Windows.Forms.TextBox();
@@ -61,7 +59,6 @@ namespace WurmSermoner
             this.txtOperator = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnRefreshBotSettings = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.txtChannelID = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.txtGuildID = new System.Windows.Forms.TextBox();
@@ -70,6 +67,9 @@ namespace WurmSermoner
             this.label4 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.txtList = new System.Windows.Forms.TextBox();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.statusStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -78,6 +78,7 @@ namespace WurmSermoner
             this.groupBox2.SuspendLayout();
             this.btnRefreshBotSettings.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnStart
@@ -174,6 +175,7 @@ namespace WurmSermoner
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(1, 1);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -215,11 +217,11 @@ namespace WurmSermoner
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(545, 280);
+            this.btnSave.Location = new System.Drawing.Point(488, 280);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(83, 23);
+            this.btnSave.Size = new System.Drawing.Size(140, 23);
             this.btnSave.TabIndex = 17;
-            this.btnSave.Text = "Save settings";
+            this.btnSave.Text = "Apply and save settings";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
@@ -228,7 +230,6 @@ namespace WurmSermoner
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.chkRunServer);
-            this.groupBox1.Controls.Add(this.button3);
             this.groupBox1.Controls.Add(this.txtPort);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.txtAddress);
@@ -249,16 +250,6 @@ namespace WurmSermoner
             this.chkRunServer.TabIndex = 21;
             this.chkRunServer.Text = "Run server on startup";
             this.chkRunServer.UseVisualStyleBackColor = true;
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(542, 38);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(83, 23);
-            this.button3.TabIndex = 20;
-            this.button3.Text = "Refresh";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // txtPort
             // 
@@ -297,7 +288,6 @@ namespace WurmSermoner
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.btnOpenFile);
-            this.groupBox2.Controls.Add(this.btnRefreshLog);
             this.groupBox2.Controls.Add(this.txtLogFile);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.txtLogsDir);
@@ -320,15 +310,6 @@ namespace WurmSermoner
             this.btnOpenFile.Text = "Open file";
             this.btnOpenFile.UseVisualStyleBackColor = true;
             this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
-            // 
-            // btnRefreshLog
-            // 
-            this.btnRefreshLog.Location = new System.Drawing.Point(542, 71);
-            this.btnRefreshLog.Name = "btnRefreshLog";
-            this.btnRefreshLog.Size = new System.Drawing.Size(83, 23);
-            this.btnRefreshLog.TabIndex = 20;
-            this.btnRefreshLog.Text = "Refresh";
-            this.btnRefreshLog.UseVisualStyleBackColor = true;
             // 
             // txtLogFile
             // 
@@ -382,7 +363,6 @@ namespace WurmSermoner
             // 
             this.btnRefreshBotSettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRefreshBotSettings.Controls.Add(this.button1);
             this.btnRefreshBotSettings.Controls.Add(this.txtChannelID);
             this.btnRefreshBotSettings.Controls.Add(this.label6);
             this.btnRefreshBotSettings.Controls.Add(this.txtGuildID);
@@ -395,16 +375,6 @@ namespace WurmSermoner
             this.btnRefreshBotSettings.TabIndex = 14;
             this.btnRefreshBotSettings.TabStop = false;
             this.btnRefreshBotSettings.Text = "Discord settings";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(542, 68);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(83, 23);
-            this.button1.TabIndex = 15;
-            this.button1.Text = "Refresh";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // txtChannelID
             // 
@@ -476,6 +446,38 @@ namespace WurmSermoner
             this.txtList.Size = new System.Drawing.Size(645, 311);
             this.txtList.TabIndex = 11;
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.button5);
+            this.tabPage3.Controls.Add(this.button4);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(651, 317);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Irc Bot";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(305, 144);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(75, 23);
+            this.button5.TabIndex = 1;
+            this.button5.Text = "button5";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(305, 115);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.TabIndex = 0;
+            this.button4.Text = "button4";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
@@ -507,6 +509,7 @@ namespace WurmSermoner
             this.btnRefreshBotSettings.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -525,7 +528,6 @@ namespace WurmSermoner
         private System.Windows.Forms.TextBox txtList;
         private System.Windows.Forms.GroupBox btnRefreshBotSettings;
         private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Button btnRefreshLog;
         private System.Windows.Forms.TextBox txtLogFile;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtLogsDir;
@@ -538,10 +540,8 @@ namespace WurmSermoner
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txtBotToken;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ToolStripStatusLabel tsSermonServer;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.TextBox txtPort;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TextBox txtAddress;
@@ -553,6 +553,9 @@ namespace WurmSermoner
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button5;
     }
 }
 
