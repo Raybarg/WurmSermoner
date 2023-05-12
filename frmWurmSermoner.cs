@@ -200,5 +200,15 @@ namespace WurmSermoner
         {
             sermon.users.ToggleAfk(textBox1.Text);
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            sermoner.irc.Connect();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            sermoner.irc.Disconnect();
+        }
     }
 }

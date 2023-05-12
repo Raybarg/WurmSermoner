@@ -23,7 +23,11 @@ namespace WurmSermoner.Modules
         public async Task ListAsync(IUser user = null)
         {
             string response = ss.preachers.GetDiscordList(ss.users);
-            await ReplyAsync(response);
+            await Context.Message.DeleteAsync();
+            if (ss.lastListMessage != null) await ss.lastListMessage.DeleteAsync();
+            ss.lastMessage = await ReplyAsync(response);
+            ss.ListMessageUpdate();
+            ss.RemoveSermonMessages();
         }
 
         [Command("add")]
