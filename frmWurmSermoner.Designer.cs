@@ -40,7 +40,7 @@ namespace WurmSermoner
             this.tsLocalServer = new System.Windows.Forms.ToolStripStatusLabel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.rbSettings = new System.Windows.Forms.TabPage();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
@@ -65,20 +65,23 @@ namespace WurmSermoner
             this.label5 = new System.Windows.Forms.Label();
             this.txtBotToken = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tbList = new System.Windows.Forms.TabPage();
             this.txtList = new System.Windows.Forms.TextBox();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.tbIrcBot = new System.Windows.Forms.TabPage();
             this.button5 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
+            this.tbQueue = new System.Windows.Forms.TabPage();
+            this.txtQueue = new System.Windows.Forms.TextBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.statusStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
+            this.rbSettings.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.btnRefreshBotSettings.SuspendLayout();
-            this.tabPage2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
+            this.tbList.SuspendLayout();
+            this.tbIrcBot.SuspendLayout();
+            this.tbQueue.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnStart
@@ -173,30 +176,31 @@ namespace WurmSermoner
             this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Controls.Add(this.rbSettings);
+            this.tabControl1.Controls.Add(this.tbList);
+            this.tabControl1.Controls.Add(this.tbIrcBot);
+            this.tabControl1.Controls.Add(this.tbQueue);
             this.tabControl1.Location = new System.Drawing.Point(1, 1);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(659, 343);
             this.tabControl1.TabIndex = 11;
             // 
-            // tabPage1
+            // rbSettings
             // 
-            this.tabPage1.Controls.Add(this.textBox1);
-            this.tabPage1.Controls.Add(this.button2);
-            this.tabPage1.Controls.Add(this.btnSave);
-            this.tabPage1.Controls.Add(this.groupBox1);
-            this.tabPage1.Controls.Add(this.groupBox2);
-            this.tabPage1.Controls.Add(this.btnRefreshBotSettings);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(651, 317);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Settings";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.rbSettings.Controls.Add(this.textBox1);
+            this.rbSettings.Controls.Add(this.button2);
+            this.rbSettings.Controls.Add(this.btnSave);
+            this.rbSettings.Controls.Add(this.groupBox1);
+            this.rbSettings.Controls.Add(this.groupBox2);
+            this.rbSettings.Controls.Add(this.btnRefreshBotSettings);
+            this.rbSettings.Location = new System.Drawing.Point(4, 22);
+            this.rbSettings.Name = "rbSettings";
+            this.rbSettings.Padding = new System.Windows.Forms.Padding(3);
+            this.rbSettings.Size = new System.Drawing.Size(651, 317);
+            this.rbSettings.TabIndex = 0;
+            this.rbSettings.Text = "Settings";
+            this.rbSettings.UseVisualStyleBackColor = true;
             // 
             // textBox1
             // 
@@ -425,16 +429,16 @@ namespace WurmSermoner
             this.label4.TabIndex = 9;
             this.label4.Text = "Bot token";
             // 
-            // tabPage2
+            // tbList
             // 
-            this.tabPage2.Controls.Add(this.txtList);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(651, 317);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "List";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.tbList.Controls.Add(this.txtList);
+            this.tbList.Location = new System.Drawing.Point(4, 22);
+            this.tbList.Name = "tbList";
+            this.tbList.Padding = new System.Windows.Forms.Padding(3);
+            this.tbList.Size = new System.Drawing.Size(651, 317);
+            this.tbList.TabIndex = 1;
+            this.tbList.Text = "List";
+            this.tbList.UseVisualStyleBackColor = true;
             // 
             // txtList
             // 
@@ -446,17 +450,17 @@ namespace WurmSermoner
             this.txtList.Size = new System.Drawing.Size(645, 311);
             this.txtList.TabIndex = 11;
             // 
-            // tabPage3
+            // tbIrcBot
             // 
-            this.tabPage3.Controls.Add(this.button5);
-            this.tabPage3.Controls.Add(this.button4);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(651, 317);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Irc Bot";
-            this.tabPage3.UseVisualStyleBackColor = true;
+            this.tbIrcBot.Controls.Add(this.button5);
+            this.tbIrcBot.Controls.Add(this.button4);
+            this.tbIrcBot.Location = new System.Drawing.Point(4, 22);
+            this.tbIrcBot.Name = "tbIrcBot";
+            this.tbIrcBot.Padding = new System.Windows.Forms.Padding(3);
+            this.tbIrcBot.Size = new System.Drawing.Size(651, 317);
+            this.tbIrcBot.TabIndex = 2;
+            this.tbIrcBot.Text = "Irc Bot";
+            this.tbIrcBot.UseVisualStyleBackColor = true;
             // 
             // button5
             // 
@@ -477,6 +481,26 @@ namespace WurmSermoner
             this.button4.Text = "button4";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // tbQueue
+            // 
+            this.tbQueue.Controls.Add(this.txtQueue);
+            this.tbQueue.Location = new System.Drawing.Point(4, 22);
+            this.tbQueue.Name = "tbQueue";
+            this.tbQueue.Size = new System.Drawing.Size(651, 317);
+            this.tbQueue.TabIndex = 3;
+            this.tbQueue.Text = "Queue";
+            this.tbQueue.UseVisualStyleBackColor = true;
+            // 
+            // txtQueue
+            // 
+            this.txtQueue.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtQueue.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtQueue.Location = new System.Drawing.Point(0, 0);
+            this.txtQueue.Multiline = true;
+            this.txtQueue.Name = "txtQueue";
+            this.txtQueue.Size = new System.Drawing.Size(651, 317);
+            this.txtQueue.TabIndex = 12;
             // 
             // openFileDialog1
             // 
@@ -499,17 +523,19 @@ namespace WurmSermoner
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
+            this.rbSettings.ResumeLayout(false);
+            this.rbSettings.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.btnRefreshBotSettings.ResumeLayout(false);
             this.btnRefreshBotSettings.PerformLayout();
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
-            this.tabPage3.ResumeLayout(false);
+            this.tbList.ResumeLayout(false);
+            this.tbList.PerformLayout();
+            this.tbIrcBot.ResumeLayout(false);
+            this.tbQueue.ResumeLayout(false);
+            this.tbQueue.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -523,8 +549,8 @@ namespace WurmSermoner
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.ToolStripStatusLabel tsLogFile;
         private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabPage rbSettings;
+        private System.Windows.Forms.TabPage tbList;
         private System.Windows.Forms.TextBox txtList;
         private System.Windows.Forms.GroupBox btnRefreshBotSettings;
         private System.Windows.Forms.GroupBox groupBox2;
@@ -553,9 +579,11 @@ namespace WurmSermoner
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.TabPage tbIrcBot;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.TabPage tbQueue;
+        private System.Windows.Forms.TextBox txtQueue;
     }
 }
 

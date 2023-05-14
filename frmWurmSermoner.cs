@@ -90,6 +90,8 @@ namespace WurmSermoner
                 tsLocalServer.Image = global::WurmSermoner.Properties.Resources.check;
             else
                 tsLocalServer.Image = global::WurmSermoner.Properties.Resources.multiply;
+
+            txtQueue.Text = sermon.preachQueue.ToString();
         }
 
         private void CheckLogFile()

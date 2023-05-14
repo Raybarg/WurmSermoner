@@ -13,9 +13,11 @@ namespace WurmSermoner.Services
     {
         public PreacherList preachers = new PreacherList();
         public UserList users = new UserList();
+        public PreachQueue preachQueue = new PreachQueue(16);
 
         public IUserMessage lastMessage;
         public IUserMessage lastListMessage;
+        public IUserMessage queueMessage;
         public DateTime lastListMessageTime;
 
         public List<IUserMessage> sermonMessages = new List<IUserMessage>();

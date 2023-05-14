@@ -325,6 +325,7 @@
     <Compile Include="Sermon\Preacher.cs" />
     <Compile Include="Sermon\PreacherList.cs" />
     <Compile Include="Sermon\PreachQueue.cs" />
+    <Compile Include="Sermon\PreachSlot.cs" />
     <Compile Include="Sermon\PriestQueue.cs" />
     <Compile Include="Sermon\Sermon.cs" />
     <Compile Include="Sermon\User.cs" />

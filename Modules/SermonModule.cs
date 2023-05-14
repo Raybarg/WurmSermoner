@@ -81,6 +81,32 @@ namespace WurmSermoner.Modules
             await ReplyAsync(sb.ToString());
         }
 
+        [Command("q")]
+        public async Task Q(int slot, string name)
+        {
+            await Context.Message.DeleteAsync();
+
+            //Helpers.ConfigHelper.addUpdate(name, Context.User.Id.ToString());
+            string resp = ss.preachQueue.ReserveSlot(slot, name, Context.User.Id.ToString());
+
+            if (!String.IsNullOrEmpty(resp))
+            {
+                await ReplyAsync(resp);
+            }
+            /*
+            if (ss.preachers.priestQueue.Contains(name))
+            {
+                await ReplyAsync("<@" + Context.User.Id.ToString() + "> is already in the queue.");
+            }
+            else
+            {
+                ss.preachers.priestQueue.Add(name);
+                ConfigHelper.addUpdate("priestQueue", ss.preachers.priestQueue.ListAll());
+                await ReplyAsync("<@" + Context.User.Id.ToString() + "> has been added to the queue.");
+            }
+            */
+        }
+
         [Command("qadd")]
         public async Task QAdd(string name)
         {
@@ -108,7 +134,10 @@ namespace WurmSermoner.Modules
         [Command("qlist")]
         public async Task QList()
         {
-            await ReplyAsync(ss.preachers.priestQueue.ListQueue() + SermonCooldownString());
+            await Context.Message.DeleteAsync();
+            string response = ss.preachQueue.ToString();
+            if (ss.queueMessage != null) await ss.queueMessage.DeleteAsync();
+            ss.queueMessage = await ReplyAsync(response);
         }
 
         [Command("qrewrite")]
